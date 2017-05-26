@@ -14,7 +14,6 @@
 module Models where
 
 import Control.Monad.Reader
-import Data.Aeson           ( FromJSON, ToJSON )
 import Data.Text            ( Text )
 import Data.Time            ( UTCTime )
 import Database.Persist.Sql
