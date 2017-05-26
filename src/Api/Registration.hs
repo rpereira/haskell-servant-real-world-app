@@ -19,7 +19,7 @@ import Types
 
 type RegistrationAPI = "users"
                     :> ReqBody '[JSON] NewUser
-                    :> Post '[JSON] Int64
+                    :> PostCreated '[JSON] Int64
 
 registrarionServer :: ServerT RegistrationAPI App
 registrarionServer = createUser
