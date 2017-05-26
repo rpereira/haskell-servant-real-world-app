@@ -1,0 +1,71 @@
+name:                ninja
+version:             0.1.0.0
+-- synopsis:
+-- description:
+homepage:            https://github.com/rpereira/ninja#readme
+license:             BSD3
+license-file:        LICENSE
+author:              Rui Afonso Pereira
+maintainer:          ruiafonsopereira@gmail.com
+copyright:           2017 Rui Afonso Pereira
+category:            Web
+build-type:          Simple
+extra-source-files:  README.md
+cabal-version:       >=1.10
+
+library
+  hs-source-dirs:      src
+  exposed-modules:     Api
+                     , Api.User
+                     , Config
+                     , Models
+                     , Types
+  build-depends:       base >= 4.7 && < 5
+                     , aeson
+                     , containers
+                     , bytestring
+                     , jwt
+                     , monad-logger
+                     , mtl
+                     , persistent
+                     , persistent-postgresql
+                     , persistent-template
+                     , servant-server
+                     , text
+                     , time
+                     , transformers
+                     , wai
+                     , wai-extra
+                     , warp
+  default-language:    Haskell2010
+
+executable ninja-exe
+  hs-source-dirs:      app
+  main-is:             Main.hs
+  ghc-options:         -threaded -rtsopts -with-rtsopts=-N
+  build-depends:       base
+                     , monad-logger
+                     , persistent-postgresql
+                     , ninja
+                     , safe
+                     , wai
+                     , warp
+  default-language:    Haskell2010
+
+test-suite ninja-test
+  type:                exitcode-stdio-1.0
+  hs-source-dirs:      test
+  main-is:             Spec.hs
+  other-modules:       CommonImports
+  build-depends:       base
+                     , ninja
+                     , hspec
+                     , hspec-wai
+                     , hspec-wai-json
+                     , aeson
+  ghc-options:         -threaded -rtsopts -with-rtsopts=-N
+  default-language:    Haskell2010
+
+source-repository head
+  type:     git
+  location: https://github.com/rpereira/ninja
