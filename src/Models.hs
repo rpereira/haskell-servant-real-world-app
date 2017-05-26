@@ -25,7 +25,7 @@ import GHC.Generics         ( Generic )
 import Config
 
 share [mkPersist sqlSettings, mkMigrate "migrateAll"] [persistLowerCase|
-User json
+User json sql=users
     username  Text
     email     Text
     bio       Text Maybe default=NULL
