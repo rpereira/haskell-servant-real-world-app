@@ -1,57 +1,33 @@
-{-# LANGUAGE DataKinds       #-}
-{-# LANGUAGE RecordWildCards #-}
-{-# LANGUAGE TypeOperators   #-}
+{-# LANGUAGE DataKinds     #-}
+{-# LANGUAGE TypeOperators #-}
 
 module Api.User where
 
+import Control.Monad.IO.Class      ( liftIO )
 import Data.Aeson                  ( FromJSON )
 import Data.Int                    ( Int64 )
-import Data.Map                    ( singleton )
+import Data.Maybe
 import Data.Text                   ( Text )
+import Data.Time                   ( getCurrentTime )
 import Database.Persist.Postgresql ( Entity (..), fromSqlKey, insert, selectList
                                    , selectFirst, (==.) )
 import Servant
-import qualified Web.JWT as JWT
 
 import Config                      ( App (..), Config (..) )
 import Models
-import Types                       -- ( AuthUser, NewUser, Login, Username )
+import Types
 
 type UserAPI =
     -- | Registration
-       "users" :> ReqBody '[JSON] (User NewUser)
-               :> Post '[JSON] (User (Maybe AuthUser))
-
-    -- | Authentication
-  -- :<|> "users" :> "login"
-               -- :> ReqBody '[JSON] User
+       "users" :> ReqBody '[JSON] NewUser
+               :> Post '[JSON] Int64
 
 userServer :: ServerT UserAPI App
-userServer = registerUser
+userServer = createUser
 
-registerUser :: User NewUser -> App (User (Maybe AuthUser))
-registerUser (User newUser) = do
-    addedUser <- createUser newUser
-    return $ User $ fmap userToAuthUser addedUser
-
-createUser :: User NewUser -> App (User (Maybe AuthUser))
-createUser (User newUser) = do
-  newUser <- runDb (insert (User (userName p) (userAge p)))
-  return $ fromSqlKey newUser
-
-token :: Username -> JWT.JSON
-token username =
-  JWT.encodeSigned
-    JWT.HS256
-    secret
-    JWT.def
-    {JWT.unregisteredClaims = singleton "username" . toJSON $ User username}
-
-userToAuthUser :: User -> AuthUser
-userToAuthUser User {..} =
-    let aEmail = email
-        aToken = token usrUsername
-        aUsername = usrUsername
-        aBio = usrBio
-        aImage = usrImage
-     in AuthUser {..}
+createUser :: NewUser -> App Int64
+createUser p = do
+    time <- liftIO getCurrentTime
+    newUser <- runDb $
+        insert (User (username p) (email p) Nothing Nothing time Nothing)
+    return $ fromSqlKey newUser

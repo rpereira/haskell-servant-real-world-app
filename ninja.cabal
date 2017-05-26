@@ -24,7 +24,6 @@ library
                      , aeson
                      , containers
                      , bytestring
-                     , jwt
                      , monad-logger
                      , mtl
                      , persistent
