@@ -24,6 +24,7 @@ type RegistrationAPI = "users"
 registrarionServer :: ServerT RegistrationAPI App
 registrarionServer = createUser
 
+-- TODO: handle case when an already existing user is given
 createUser :: NewUser -> App Int64
 createUser p = do
     time <- liftIO getCurrentTime
