@@ -18,6 +18,7 @@ library
   exposed-modules:     Api
                      , Api.Profile
                      , Api.Registration
+                     , Api.User
                      , Config
                      , Models
                      , Types

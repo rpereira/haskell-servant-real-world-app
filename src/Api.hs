@@ -14,13 +14,16 @@ import Models
 
 import Api.Profile
 import Api.Registration
+import Api.User
 
 type API = RegistrationAPI
+      :<|> UserAPI
       :<|> ProfileAPI
 
 -- | Combinate all endpoints to be served.
 server :: ServerT API App
 server = registrarionServer
+    :<|> userServer
     :<|> profileServer
 
 appApi :: Proxy API
