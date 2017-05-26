@@ -12,13 +12,13 @@ import Servant
 import Config                      (App (..), Config (..))
 import Models
 
-import Api.User
+import Api.Registration
 
-type API = UserAPI
+type API = RegistrationAPI
 
 -- | Combinate all endpoints to be served.
 server :: ServerT API App
-server = userServer
+server = registrarionServer
 
 appApi :: Proxy API
 appApi = Proxy
