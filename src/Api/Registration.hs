@@ -1,7 +1,7 @@
 {-# LANGUAGE DataKinds     #-}
 {-# LANGUAGE TypeOperators #-}
 
-module Api.User where
+module Api.Registration where
 
 import Control.Monad.IO.Class      ( liftIO )
 import Data.Aeson                  ( FromJSON )
@@ -17,13 +17,12 @@ import Config                      ( App (..), Config (..) )
 import Models
 import Types
 
-type UserAPI =
-    -- | Registration
-       "users" :> ReqBody '[JSON] NewUser
-               :> Post '[JSON] Int64
+type RegistrationAPI = "users"
+                    :> ReqBody '[JSON] NewUser
+                    :> Post '[JSON] Int64
 
-userServer :: ServerT UserAPI App
-userServer = createUser
+registrarionServer :: ServerT RegistrationAPI App
+registrarionServer = createUser
 
 createUser :: NewUser -> App Int64
 createUser p = do
