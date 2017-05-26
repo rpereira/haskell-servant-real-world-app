@@ -26,15 +26,14 @@ import Config
 
 share [mkPersist sqlSettings, mkMigrate "migrateAll"] [persistLowerCase|
 User json
-    name              Text
-    email             Text
-    encryptedPassword Text default=''
-    bio               Text Maybe
-    image             Text Maybe
-    createdAt         UTCTime default=now()
-    updatedAt         UTCTime Maybe default=NULL
+    username  Text
+    email     Text
+    bio       Text Maybe default=NULL
+    image     Text Maybe default=NULL
+    createdAt UTCTime default=now()
+    updatedAt UTCTime Maybe default=NULL
 
-    UniqueEmail email
+    UniqueUser username email
     deriving Show
 |]
 
