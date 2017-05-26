@@ -16,7 +16,7 @@ cabal-version:       >=1.10
 library
   hs-source-dirs:      src
   exposed-modules:     Api
-                     -- , Api.User
+                     , Api.Profile
                      , Api.Registration
                      , Config
                      , Models
