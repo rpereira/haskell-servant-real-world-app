@@ -23,6 +23,7 @@ import Database.Persist.TH  ( mkMigrate, mkPersist, persistLowerCase, share
 import GHC.Generics         ( Generic )
 
 import Config
+import Types
 
 share [mkPersist sqlSettings, mkMigrate "migrateAll"] [persistLowerCase|
 User json sql=users
@@ -45,7 +46,7 @@ UserFollower json sql=user_followers
     deriving Show
 
 Article json sql=articles
-    slug        Text
+    slug        Slug
     title       Text
     description Text
     body        Text

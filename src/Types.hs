@@ -8,6 +8,7 @@ import Data.Text
 import GHC.Generics
 
 type Username = Text
+type Slug = Text
 
 --------------------------------------------------------------------------------
 --  QueryParams

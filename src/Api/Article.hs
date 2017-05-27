@@ -56,5 +56,5 @@ createArticle userId a = do
 --  Utils
 
 -- | TODO: move to utils file and add tests
-slugify :: Text -> Text
+slugify :: Text -> Slug
 slugify = T.intercalate "-" . T.words
