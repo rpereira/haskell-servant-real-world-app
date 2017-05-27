@@ -7,12 +7,13 @@ module Api.Article where
 import Control.Monad.IO.Class      ( liftIO )
 import Data.Aeson                  ( FromJSON )
 import Data.Int                    ( Int64 )
-import Data.Maybe
+import Data.Maybe                  ( Maybe, fromMaybe )
 import qualified Data.Text as T
 import Data.Text                   ( Text )
 import Data.Time                   ( getCurrentTime )
 import Database.Persist.Postgresql ( Entity (..), (==.), deleteWhere, entityKey
                                    , insert, selectFirst, selectList, toSqlKey, fromSqlKey )
+import Database.Persist.Types      ( SelectOpt (..) )
 import Servant
 
 import Config                      ( App (..), Config (..) )
@@ -20,7 +21,9 @@ import Models
 import Types
 
 type ArticleAPI =
-         "articles" :> Get '[JSON] [Entity Article]
+         "articles" :> QueryParam "limit" Limit
+                    :> QueryParam "offset" Offset
+                    :> Get '[JSON] [Entity Article]
 
     :<|> "articles" :> Capture "userId" Int64
                     :> ReqBody '[JSON] NewArticle
@@ -30,9 +33,14 @@ articleServer :: ServerT ArticleAPI App
 articleServer = getArticles
            :<|> createArticle
 
-getArticles :: App [Entity Article]
-getArticles = runDb (selectList [] [])
+-- | TODO: implement required query params
+getArticles :: Maybe Limit -> Maybe Offset -> App [Entity Article]
+getArticles mbLimit mbOffset = do
+    let limit = fromMaybe 20 mbLimit
+        offset = fromMaybe 0 mbOffset
+    runDb (selectList [] [LimitTo limit, OffsetBy offset])
 
+-- | TODO: return an article
 createArticle :: Int64 -> NewArticle -> App ()
 createArticle userId a = do
     time <- liftIO getCurrentTime

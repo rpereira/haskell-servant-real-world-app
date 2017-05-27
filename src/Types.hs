@@ -2,11 +2,17 @@
 
 module Types where
 
-import Data.Aeson ( FromJSON )
+import Data.Aeson ( FromJSON, ToJSON )
 import Data.Text
 import GHC.Generics
 
 type Username = Text
+
+--------------------------------------------------------------------------------
+--  QueryParams
+
+type Limit = Int
+type Offset = Int
 
 data NewUser = NewUser
     { username :: Username
