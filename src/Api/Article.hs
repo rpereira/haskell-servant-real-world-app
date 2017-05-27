@@ -38,7 +38,9 @@ getArticles :: Maybe Limit -> Maybe Offset -> App [Entity Article]
 getArticles mbLimit mbOffset = do
     let limit = fromMaybe 20 mbLimit
         offset = fromMaybe 0 mbOffset
-    runDb (selectList [] [LimitTo limit, OffsetBy offset])
+    runDb $ selectList [] [ LimitTo limit
+                          , OffsetBy offset
+                          , Desc ArticleCreatedAt ]
 
 -- | TODO: return an article
 createArticle :: Int64 -> NewArticle -> App ()
