@@ -8,8 +8,8 @@ import Data.Int                    ( Int64 )
 import Data.Maybe
 import Data.Text                   ( Text )
 import Data.Time                   ( getCurrentTime )
-import Database.Persist.Postgresql ( Entity (..), (==.), entityKey, insert
-                                   , selectFirst, toSqlKey )
+import Database.Persist.Postgresql ( Entity (..), (==.), deleteWhere, entityKey
+                                   , insert, selectFirst, toSqlKey )
 import Servant
 
 import Config                      ( App (..), Config (..) )
@@ -25,8 +25,16 @@ type ProfileAPI =
                     :> Capture "followerId" Int64
                     :> Post '[JSON] (Entity User)
 
+    :<|> "profiles" :> Capture "username" Username
+                    :> "follow"
+                    :> Capture "followerId" Int64
+                    :> Delete '[JSON] (Entity User)
+
 profileServer :: ServerT ProfileAPI App
-profileServer = getProfile :<|> followProfile
+profileServer =
+         getProfile
+    :<|> followProfile
+    :<|> unfollowProfile
 
 getProfile :: Username -> App (Entity User)
 getProfile username = do
@@ -44,4 +52,14 @@ followProfile username followerId = do
       Nothing -> throwError err404
       Just followee -> do
           runDb $ insert (UserFollower (entityKey followee) (toSqlKey followerId))
+          return followee
+
+unfollowProfile :: Username -> Int64 -> App (Entity User)
+unfollowProfile username followerId = do
+    maybeUser <- runDb $ selectFirst [UserUsername ==. username] []
+    case maybeUser of
+      Nothing -> throwError err404
+      Just followee -> do
+          runDb $ deleteWhere [ UserFollowerUserId ==. entityKey followee
+                              , UserFollowerFollowerId ==. toSqlKey followerId ]
           return followee
