@@ -259,12 +259,7 @@ Authentication required, returns a [Profile](#profile)
 
 No additional parameters required
 
-Example:
 
-```
-curl --request POST --header "Content-Type: application/json" \
-  http://localhost:8080/profiles/bar/follow/5
-```
 
 ### Unfollow user
 
@@ -274,12 +269,7 @@ Authentication required, returns a [Profile](#profile)
 
 No additional parameters required
 
-Example:
 
-```
-curl --request DELETE --header "Content-Type: application/json" \
-  http://localhost:8080/profiles/bar/follow/5
-```
 
 ### List Articles
 
