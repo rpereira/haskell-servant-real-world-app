@@ -43,6 +43,17 @@ UserFollower json sql=user_followers
     Primary userId followerId
 
     deriving Show
+
+Article json sql=articles
+    slug        Text
+    title       Text
+    description Text
+    body        Text
+    createdAt   UTCTime default=now()
+    updatedAt   UTCTime Maybe default=NULL
+    userId      UserId
+
+    UniqueSlug slug
 |]
 
 doMigrations :: SqlPersistT IO ()

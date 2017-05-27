@@ -14,3 +14,11 @@ data NewUser = NewUser
     } deriving (Show, Generic)
 
 instance FromJSON NewUser
+
+data NewArticle = NewArticle
+    { title       :: Text
+    , description :: Text
+    , body        :: Text
+    } deriving (Show, Generic)
+
+instance FromJSON NewArticle
