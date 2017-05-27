@@ -1,8 +1,9 @@
-{-# LANGUAGE DeriveGeneric #-}
+{-# LANGUAGE DeriveGeneric     #-}
+{-# LANGUAGE OverloadedStrings #-}
 
 module Types where
 
-import Data.Aeson ( FromJSON, ToJSON )
+import Data.Aeson.Types ( FromJSON, (.=), ToJSON, object, toJSON )
 import Data.Text
 import GHC.Generics
 
@@ -21,6 +22,9 @@ data NewUser = NewUser
 
 instance FromJSON NewUser
 
+--------------------------------------------------------------------------------
+--  Article
+
 data NewArticle = NewArticle
     { title       :: Text
     , description :: Text
@@ -28,3 +32,9 @@ data NewArticle = NewArticle
     } deriving (Show, Generic)
 
 instance FromJSON NewArticle
+
+data Arts a = Arts a Int
+    deriving (Eq, Show, Generic)
+
+instance ToJSON a => ToJSON (Arts a) where
+    toJSON (Arts a i) = object ["articles" .= a, "articlesCount" .= i]

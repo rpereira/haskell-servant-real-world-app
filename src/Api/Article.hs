@@ -1,6 +1,6 @@
-{-# LANGUAGE DataKinds     #-}
-{-# LANGUAGE TypeOperators #-}
+{-# LANGUAGE DataKinds         #-}
 {-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE TypeOperators     #-}
 
 module Api.Article where
 
@@ -23,7 +23,7 @@ import Types
 type ArticleAPI =
          "articles" :> QueryParam "limit" Limit
                     :> QueryParam "offset" Offset
-                    :> Get '[JSON] [Entity Article]
+                    :> Get '[JSON] (Arts [Entity Article])
 
     :<|> "articles" :> Capture "userId" Int64
                     :> ReqBody '[JSON] NewArticle
@@ -34,13 +34,14 @@ articleServer = getArticles
            :<|> createArticle
 
 -- | TODO: implement required query params
-getArticles :: Maybe Limit -> Maybe Offset -> App [Entity Article]
+getArticles :: Maybe Limit -> Maybe Offset -> App (Arts [Entity Article])
 getArticles mbLimit mbOffset = do
     let limit = fromMaybe 20 mbLimit
         offset = fromMaybe 0 mbOffset
-    runDb $ selectList [] [ LimitTo limit
-                          , OffsetBy offset
-                          , Desc ArticleCreatedAt ]
+    articles <- runDb $ selectList [] [ LimitTo limit
+                                      , OffsetBy offset
+                                      , Desc ArticleCreatedAt ]
+    return $ Arts articles (length articles)
 
 -- | TODO: return an article
 createArticle :: Int64 -> NewArticle -> App ()
