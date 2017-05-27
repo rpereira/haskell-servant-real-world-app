@@ -13,7 +13,7 @@ import qualified Data.Text as T
 import Data.Text                   ( Text )
 import Data.Time                   ( getCurrentTime )
 import Database.Persist.Postgresql ( Entity (..), (==.), deleteWhere, entityKey
-                                   , insert, selectFirst, selectList, toSqlKey, fromSqlKey )
+                                   , insert, selectFirst, selectList, toSqlKey, deleteWhere )
 import Database.Persist.Types      ( SelectOpt (..) )
 import Servant
 
@@ -33,10 +33,14 @@ type ArticleAPI =
                     :> ReqBody '[JSON] NewArticle
                     :> PostCreated '[JSON] ()
 
+    :<|> "articles" :> Capture "slug" Slug
+                    :> DeleteNoContent '[JSON] NoContent
+
 articleServer :: ServerT ArticleAPI App
 articleServer = getArticles
            :<|> getArticle
            :<|> createArticle
+           :<|> deleteArticle
 
 -- | TODO: implement required query params
 getArticles :: Maybe Limit -> Maybe Offset -> App (Arts [Entity Article])
@@ -61,6 +65,11 @@ createArticle userId a = do
         insert (Article (slugify $ title a) (title a) (body a) (description a)
                          time Nothing (toSqlKey userId))
     return ()
+
+deleteArticle :: Slug -> App NoContent
+deleteArticle slug = do
+    runDb $ deleteWhere [ArticleSlug ==. slug]
+    return NoContent
 
 --------------------------------------------------------------------------------
 --  Utils
