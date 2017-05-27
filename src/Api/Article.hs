@@ -6,6 +6,7 @@ module Api.Article where
 
 import Control.Monad.IO.Class      ( liftIO )
 import Data.Aeson                  ( FromJSON )
+import Data.Char                   ( isAlphaNum )
 import Data.Int                    ( Int64 )
 import Data.Maybe                  ( Maybe, fromMaybe )
 import qualified Data.Text as T
@@ -57,4 +58,11 @@ createArticle userId a = do
 
 -- | TODO: move to utils file and add tests
 slugify :: Text -> Slug
-slugify = T.intercalate "-" . T.words
+slugify text = T.intercalate "-" $ getSlugWords text
+
+-- | Convert 'Text' to a possibly empty collection of words. Every word is
+-- guaranteed to be non-empty alpha-numeric lower-cased sequence of
+-- characters.
+getSlugWords :: Text -> [Text]
+getSlugWords = T.words . T.toLower . T.map f . T.replace "'" ""
+    where f x = if isAlphaNum x then x else ' '
