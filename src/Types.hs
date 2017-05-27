@@ -39,3 +39,9 @@ data Arts a = Arts a Int
 
 instance ToJSON a => ToJSON (Arts a) where
     toJSON (Arts a i) = object ["articles" .= a, "articlesCount" .= i]
+
+data Art a = Art a
+    deriving (Eq, Show, Generic)
+
+instance ToJSON a => ToJSON (Art a) where
+    toJSON (Art a) = object ["article" .= a]

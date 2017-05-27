@@ -26,12 +26,16 @@ type ArticleAPI =
                     :> QueryParam "offset" Offset
                     :> Get '[JSON] (Arts [Entity Article])
 
+    :<|> "articles" :> Capture "slug" Slug
+                    :> Get '[JSON] (Art (Maybe (Entity Article)))
+
     :<|> "articles" :> Capture "userId" Int64
                     :> ReqBody '[JSON] NewArticle
                     :> PostCreated '[JSON] ()
 
 articleServer :: ServerT ArticleAPI App
 articleServer = getArticles
+           :<|> getArticle
            :<|> createArticle
 
 -- | TODO: implement required query params
@@ -43,6 +47,11 @@ getArticles mbLimit mbOffset = do
                                       , OffsetBy offset
                                       , Desc ArticleCreatedAt ]
     return $ Arts articles (length articles)
+
+getArticle :: Slug -> App (Art (Maybe (Entity Article)))
+getArticle slug = do
+    article <- runDb $ selectFirst [ArticleSlug ==. slug] []
+    return $ Art article
 
 -- | TODO: return an article
 createArticle :: Int64 -> NewArticle -> App ()
