@@ -35,6 +35,14 @@ User json sql=users
 
     UniqueUser username email
     deriving Show
+
+UserFollower json sql=user_followers
+    userId     UserId
+    followerId UserId
+
+    Primary userId followerId
+
+    deriving Show
 |]
 
 doMigrations :: SqlPersistT IO ()
