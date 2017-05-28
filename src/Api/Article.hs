@@ -13,8 +13,10 @@ import qualified Data.Text as T
 import Data.Text                   ( Text )
 import Data.Time                   ( getCurrentTime )
 import Database.Persist.Postgresql ( Entity (..), (==.), deleteWhere, entityKey
-                                   , insert, selectFirst, selectList, toSqlKey, deleteWhere )
+                                   , insert, selectFirst, selectList, toSqlKey, deleteWhere, rawSql)
 import Database.Persist.Types      ( SelectOpt (..) )
+import qualified Database.Esqueleto as E
+import Database.Esqueleto          ( (^.) )
 import Servant
 
 import Config                      ( App (..), Config (..) )
@@ -45,12 +47,30 @@ articleServer = getArticles
 -- | TODO: implement required query params
 getArticles :: Maybe Limit -> Maybe Offset -> App (Arts [Entity Article])
 getArticles mbLimit mbOffset = do
-    let limit = fromMaybe 20 mbLimit
-        offset = fromMaybe 0 mbOffset
-    articles <- runDb $ selectList [] [ LimitTo limit
-                                      , OffsetBy offset
-                                      , Desc ArticleCreatedAt ]
-    return $ Arts articles (length articles)
+    -- ATTEMPT TO USE RAW SQL (not working):
+    --articles <- runDb $ rawSql
+    --    "SELECT a.* FROM articles a \
+    --    \INNER JOIN taggings tgs \
+    --    \ON a.id = tgs.article_id \
+    --    \INNER JOIN tags t \
+    --    \ON tgs.tag_id = t.id"
+    --    []
+    articles <- E.select $
+        E.from $ \(article `E.InnerJoin` tagging `E.InnerJoin` tag) -> do
+            E.on (article ^. ArticleId ==. tagging ^. TaggingArticleId)
+            E.on (tagging ^. TaggingTagId ==. tag ^. TagId)
+            -- E.orderBy [asc (article ^. ArticleCreatedAt)]
+            return (article, tagging, tag)
+    case articles of
+      Nothing -> return []
+      Just xs -> return $ Arts xs (length xs)
+    -- WORKING SOLUTION WITHOUT TAGS:
+    --     let limit = fromMaybe 20 mbLimit
+    --         offset = fromMaybe 0 mbOffset
+    --     articles <- runDb $ selectList [] [ LimitTo limit
+    --                                       , OffsetBy offset
+    --                                       , Desc ArticleCreatedAt ]
+    --     return $ Arts articles (length articles)
 
 getArticle :: Slug -> App (Art (Maybe (Entity Article)))
 getArticle slug = do

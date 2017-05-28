@@ -27,6 +27,7 @@ library
                      , aeson
                      , containers
                      , bytestring
+                     , esqueleto
                      , monad-logger
                      , mtl
                      , persistent
