@@ -60,11 +60,14 @@ getArticle slug = do
 -- | TODO: return an article
 createArticle :: Int64 -> Art NewArticle -> App ()
 createArticle userId (Art a) = do
-    time <- liftIO getCurrentTime
-    runDb $
-        insert (Article (slugify $ title a) (title a) (body a) (description a)
-                         time Nothing (toSqlKey userId))
+    insertArticle a userId
     return ()
+
+insertArticle :: NewArticle -> Int64 -> App (Key Article)
+insertArticle a userId = runDb $ do
+    time <- liftIO getCurrentTime
+    insert (Article (slugify $ title a) (title a) (body a) (description a)
+                     time Nothing (toSqlKey userId))
 
 -- | TODO: delete everything associated with an article
 deleteArticle :: Slug -> App NoContent
