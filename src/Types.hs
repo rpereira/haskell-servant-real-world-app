@@ -17,6 +17,20 @@ type Slug = Text
 type Limit = Int
 type Offset = Int
 
+--------------------------------------------------------------------------------
+--  User
+
+data Usr a = Usr a
+    deriving (Eq, Show, Generic)
+
+instance ToJSON a => ToJSON (Usr a) where
+    toJSON (Usr a) = object ["user" .= a]
+
+instance FromJSON a => FromJSON (Usr a) where
+    parseJSON = withObject "user" $ \o -> do
+        a <- o .: "user"
+        return (Usr a)
+
 data NewUser = NewUser
     { username :: Username
     , email    :: Text

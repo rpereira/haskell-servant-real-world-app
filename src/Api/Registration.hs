@@ -18,16 +18,16 @@ import Models
 import Types
 
 type RegistrationAPI = "users"
-                    :> ReqBody '[JSON] NewUser
+                    :> ReqBody '[JSON] (Usr NewUser)
                     :> PostCreated '[JSON] Int64
 
 registrarionServer :: ServerT RegistrationAPI App
 registrarionServer = createUser
 
 -- TODO: handle case when an already existing user is given
-createUser :: NewUser -> App Int64
-createUser p = do
+createUser :: Usr NewUser -> App Int64
+createUser (Usr u) = do
     time <- liftIO getCurrentTime
     newUser <- runDb $
-        insert (User (username p) (email p) Nothing Nothing time Nothing)
+        insert (User (username u) (email u) Nothing Nothing time Nothing)
     return $ fromSqlKey newUser
