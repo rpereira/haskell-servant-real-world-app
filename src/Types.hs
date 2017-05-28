@@ -3,7 +3,8 @@
 
 module Types where
 
-import Data.Aeson.Types ( FromJSON, (.=), ToJSON, object, toJSON )
+import Data.Aeson.Types ( FromJSON, (.:), (.=), ToJSON, object, parseJSON
+                        , toJSON, withObject )
 import Data.Text
 import GHC.Generics
 
@@ -45,3 +46,8 @@ data Art a = Art a
 
 instance ToJSON a => ToJSON (Art a) where
     toJSON (Art a) = object ["article" .= a]
+
+instance FromJSON a => FromJSON (Art a) where
+    parseJSON = withObject "article" $ \o -> do
+        a <- o .: "article"
+        return (Art a)

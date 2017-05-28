@@ -30,7 +30,7 @@ type ArticleAPI =
                     :> Get '[JSON] (Art (Maybe (Entity Article)))
 
     :<|> "articles" :> Capture "userId" Int64
-                    :> ReqBody '[JSON] NewArticle
+                    :> ReqBody '[JSON] (Art NewArticle)
                     :> PostCreated '[JSON] ()
 
     :<|> "articles" :> Capture "slug" Slug
@@ -58,14 +58,15 @@ getArticle slug = do
     return $ Art article
 
 -- | TODO: return an article
-createArticle :: Int64 -> NewArticle -> App ()
-createArticle userId a = do
+createArticle :: Int64 -> Art NewArticle -> App ()
+createArticle userId (Art a) = do
     time <- liftIO getCurrentTime
     runDb $
         insert (Article (slugify $ title a) (title a) (body a) (description a)
                          time Nothing (toSqlKey userId))
     return ()
 
+-- | TODO: delete everything associated with an article
 deleteArticle :: Slug -> App NoContent
 deleteArticle slug = do
     runDb $ deleteWhere [ArticleSlug ==. slug]
