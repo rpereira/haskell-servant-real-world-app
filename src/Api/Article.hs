@@ -31,7 +31,7 @@ type ArticleAPI =
 
     :<|> "articles" :> Capture "userId" Int64
                     :> ReqBody '[JSON] (Art NewArticle)
-                    :> PostCreated '[JSON] ()
+                    :> PostCreated '[JSON] (Art (Entity Article))
 
     :<|> "articles" :> Capture "slug" Slug
                     :> DeleteNoContent '[JSON] NoContent
@@ -57,17 +57,20 @@ getArticle slug = do
     article <- runDb $ selectFirst [ArticleSlug ==. slug] []
     return $ Art article
 
--- | TODO: return an article
-createArticle :: Int64 -> Art NewArticle -> App ()
+-- | TODO: Correctly handle attempt to create title with already existing slug
+createArticle :: Int64 -> Art NewArticle -> App (Art (Entity Article))
 createArticle userId (Art a) = do
-    insertArticle a userId
-    return ()
+    article <- insertArticle a userId
+    case article of
+      Nothing -> throwError err409 { errBody = "Title already exists" }
+      Just x -> return $ Art x
 
-insertArticle :: NewArticle -> Int64 -> App (Key Article)
-insertArticle a userId = runDb $ do
+insertArticle :: NewArticle -> Int64 -> App (Maybe (Entity Article))
+insertArticle a userId = do
     time <- liftIO getCurrentTime
-    insert (Article (slugify $ title a) (title a) (body a) (description a)
-                     time Nothing (toSqlKey userId))
+    id <- runDb $ insert (Article (slugify $ title a) (title a) (body a) (description a)
+                                   time Nothing (toSqlKey userId))
+    runDb $ selectFirst [ArticleId ==. id] []
 
 -- | TODO: delete everything associated with an article
 deleteArticle :: Slug -> App NoContent
