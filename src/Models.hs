@@ -60,6 +60,15 @@ Tag json sql=tags
     name Text
     UniqueName name
     deriving Show
+
+Tagging json sql=taggings
+    articleId ArticleId
+    tagId TagId
+
+    Primary articleId tagId
+    UniqueTagging articleId tagId
+
+    deriving Show
 |]
 
 doMigrations :: SqlPersistT IO ()
