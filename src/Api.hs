@@ -14,6 +14,7 @@ import Models
 
 import Api.Article
 import Api.Comment
+import Api.Favorite
 import Api.Profile
 import Api.Registration
 import Api.Tag
@@ -23,6 +24,7 @@ type API = RegistrationAPI
       :<|> ArticleAPI
       :<|> TagAPI
       :<|> CommentAPI
+      :<|> FavoriteAPI
 
 -- | Combinate all endpoints to be served.
 server :: ServerT API App
@@ -31,6 +33,7 @@ server = registrarionServer
     :<|> articleServer
     :<|> tagServer
     :<|> commentServer
+    :<|> favoriteServer
 
 appApi :: Proxy API
 appApi = Proxy

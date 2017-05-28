@@ -78,6 +78,13 @@ Comment json sql=comments
     articleId ArticleId
 
     deriving Show
+
+Favorite json sql=favorits
+    userId    UserId
+    articleId ArticleId
+
+    Primary userId articleId
+    UniqueFavorite userId articleId
 |]
 
 doMigrations :: SqlPersistT IO ()

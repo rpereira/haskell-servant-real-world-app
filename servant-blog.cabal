@@ -18,6 +18,7 @@ library
   exposed-modules:     Api
                      , Api.Article
                      , Api.Comment
+                     , Api.Favorite
                      , Api.Profile
                      , Api.Registration
                      , Api.Tag
