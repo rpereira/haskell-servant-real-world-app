@@ -15,16 +15,19 @@ import Models
 import Api.Article
 import Api.Profile
 import Api.Registration
+import Api.Tag
 
 type API = RegistrationAPI
       :<|> ProfileAPI
       :<|> ArticleAPI
+      :<|> TagAPI
 
 -- | Combinate all endpoints to be served.
 server :: ServerT API App
 server = registrarionServer
     :<|> profileServer
     :<|> articleServer
+    :<|> tagServer
 
 appApi :: Proxy API
 appApi = Proxy

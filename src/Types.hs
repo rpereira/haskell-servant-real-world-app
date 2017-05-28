@@ -65,3 +65,12 @@ instance FromJSON a => FromJSON (Art a) where
     parseJSON = withObject "article" $ \o -> do
         a <- o .: "article"
         return (Art a)
+
+--------------------------------------------------------------------------------
+--  Tags
+
+data TagList a = TagList a
+    deriving (Eq, Show)
+
+instance ToJSON a => ToJSON (TagList a) where
+    toJSON (TagList a) = object ["tags" .= a]

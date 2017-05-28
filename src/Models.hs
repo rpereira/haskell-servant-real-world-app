@@ -55,6 +55,11 @@ Article json sql=articles
     userId      UserId
 
     UniqueSlug slug
+
+Tag json sql=tags
+    name Text
+    UniqueName name
+    deriving Show
 |]
 
 doMigrations :: SqlPersistT IO ()

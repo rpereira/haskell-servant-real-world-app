@@ -19,6 +19,7 @@ library
                      , Api.Article
                      , Api.Profile
                      , Api.Registration
+                     , Api.Tag
                      , Config
                      , Models
                      , Types
