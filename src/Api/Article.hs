@@ -58,6 +58,8 @@ getArticle slug = do
     return $ Art article
 
 -- | TODO: Correctly handle attempt to create title with already existing slug
+-- Nice explanation here for status code:
+-- https://stackoverflow.com/a/25541368/1319249
 createArticle :: Int64 -> Art NewArticle -> App (Art (Entity Article))
 createArticle userId (Art a) = do
     article <- insertArticle a userId
@@ -68,9 +70,10 @@ createArticle userId (Art a) = do
 insertArticle :: NewArticle -> Int64 -> App (Maybe (Entity Article))
 insertArticle a userId = do
     time <- liftIO getCurrentTime
-    id <- runDb $ insert (Article (slugify $ title a) (title a) (body a) (description a)
-                                   time Nothing (toSqlKey userId))
-    runDb $ selectFirst [ArticleId ==. id] []
+    runDb $ do
+        id <- insert (Article (slugify $ title a) (title a) (body a)
+                              (description a) time Nothing (toSqlKey userId))
+        selectFirst [ArticleId ==. id] []
 
 -- | TODO: delete everything associated with an article
 deleteArticle :: Slug -> App NoContent
