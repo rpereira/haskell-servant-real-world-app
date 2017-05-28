@@ -69,6 +69,15 @@ Tagging json sql=taggings
     UniqueTagging articleId tagId
 
     deriving Show
+
+Comment json sql=comments
+    body      Text
+    createdAt UTCTime default=now()
+    updatedAt UTCTime Maybe default=NULL
+    userId    UserId
+    articleId ArticleId
+
+    deriving Show
 |]
 
 doMigrations :: SqlPersistT IO ()

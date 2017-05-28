@@ -17,6 +17,7 @@ library
   hs-source-dirs:      src
   exposed-modules:     Api
                      , Api.Article
+                     , Api.Comment
                      , Api.Profile
                      , Api.Registration
                      , Api.Tag

@@ -74,3 +74,12 @@ data TagList a = TagList a
 
 instance ToJSON a => ToJSON (TagList a) where
     toJSON (TagList a) = object ["tags" .= a]
+
+--------------------------------------------------------------------------------
+--  Comments
+
+data Cmts a = Cmts a
+    deriving (Eq, Show, Generic)
+
+instance ToJSON a => ToJSON (Cmts a) where
+    toJSON (Cmts a) = object ["comments" .= a]
