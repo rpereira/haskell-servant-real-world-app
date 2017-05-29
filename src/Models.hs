@@ -1,29 +1,18 @@
-{-# LANGUAGE DeriveGeneric              #-}
-{-# LANGUAGE EmptyDataDecls             #-}
-{-# LANGUAGE FlexibleContexts           #-}
-{-# LANGUAGE FlexibleInstances          #-}
-{-# LANGUAGE GADTs                      #-}
-{-# LANGUAGE GeneralizedNewtypeDeriving #-}
-{-# LANGUAGE MultiParamTypeClasses      #-}
-{-# LANGUAGE OverloadedStrings          #-}
-{-# LANGUAGE QuasiQuotes                #-}
-{-# LANGUAGE RecordWildCards            #-}
-{-# LANGUAGE TemplateHaskell            #-}
-{-# LANGUAGE TypeFamilies               #-}
+{-# LANGUAGE FlexibleContexts      #-}
+{-# LANGUAGE FlexibleInstances     #-}
+{-# LANGUAGE GADTs                 #-}
+{-# LANGUAGE MultiParamTypeClasses #-}
+{-# LANGUAGE OverloadedStrings     #-}
+{-# LANGUAGE TypeFamilies          #-}
 
 module Models where
 
 import Control.Monad.Reader
-import Data.Aeson           ( FromJSON, ToJSON )
-import Data.Text            ( Text )
-import Data.Time            ( UTCTime )
 import Database.Persist.Sql
-import Database.Persist.TH  ( mkMigrate, mkPersist, persistLowerCase, share
-                            , sqlSettings )
-import GHC.Generics         ( Generic )
 
 import Models.Article
 import Models.Comment
+import Models.Favorite
 import Models.User
 import Models.UserFollower
 import Models.Tag
@@ -31,20 +20,11 @@ import Models.Tagging
 import Config
 import Types
 
-share [mkPersist sqlSettings, mkMigrate "migrateAll"] [persistLowerCase|
-Favorite json sql=favorits
-    userId    UserId
-    articleId ArticleId
-
-    Primary userId articleId
-    UniqueFavorite userId articleId
-|]
-
 doMigrations :: SqlPersistT IO ()
 doMigrations = do
-    runMigration migrateAll
     runMigration migrateArticle
     runMigration migrateComment
+    runMigration migrateFavorite
     runMigration migrateUser
     runMigration migrateUserFollower
     runMigration migrateTag

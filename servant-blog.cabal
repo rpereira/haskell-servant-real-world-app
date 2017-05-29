@@ -26,6 +26,7 @@ library
                      , Models
                      , Models.Article
                      , Models.Comment
+                     , Models.Favorite
                      , Models.User
                      , Models.UserFollower
                      , Models.Tag
