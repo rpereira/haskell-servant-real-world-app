@@ -3,16 +3,13 @@
 
 module Api.Profile where
 
-import Data.Aeson                  (FromJSON)
 import Data.Int                    (Int64)
-import Data.Maybe
-import Data.Text                   (Text)
 import Data.Time                   (getCurrentTime)
 import Database.Persist.Postgresql (Entity (..), deleteWhere, entityKey, insert,
                                     selectFirst, toSqlKey, (==.))
 import Servant
 
-import Config                      (App (..), Config (..))
+import Config                      (App (..))
 import DB                          (runDb)
 import Models.User
 import Models.UserFollower

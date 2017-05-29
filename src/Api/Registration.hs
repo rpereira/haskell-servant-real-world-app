@@ -4,13 +4,11 @@
 module Api.Registration where
 
 import Control.Monad.IO.Class      (liftIO)
-import Data.Aeson                  (FromJSON)
 import Data.Int                    (Int64)
 import Data.Maybe
 import Data.Text                   (Text)
 import Data.Time                   (getCurrentTime)
-import Database.Persist.Postgresql (Entity (..), fromSqlKey, insert,
-                                    selectFirst, selectList, (==.))
+import Database.Persist.Postgresql (Entity (..), fromSqlKey, insert, (==.))
 import Servant
 
 import Config                      (App (..), Config (..))

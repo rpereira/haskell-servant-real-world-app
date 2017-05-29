@@ -13,17 +13,10 @@
 
 module Models.User where
 
-import Control.Monad.Reader
-import Data.Aeson           (FromJSON, ToJSON)
-import Data.Text            (Text)
-import Data.Time            (UTCTime)
-import Database.Persist.Sql
-import Database.Persist.TH  (mkMigrate, mkPersist, persistLowerCase, share,
-                             sqlSettings)
-import GHC.Generics         (Generic)
-
-import Config
-import Types
+import Data.Text           (Text)
+import Data.Time           (UTCTime)
+import Database.Persist.TH (mkMigrate, mkPersist, persistLowerCase, share,
+                            sqlSettings)
 
 share [mkPersist sqlSettings, mkMigrate "migrateUser"] [persistLowerCase|
 User json sql=users

@@ -14,13 +14,10 @@
 module Models.Article where
 
 import Control.Monad.Reader
-import Data.Aeson           (FromJSON, ToJSON)
 import Data.Text            (Text)
 import Data.Time            (UTCTime)
-import Database.Persist.Sql
 import Database.Persist.TH  (mkMigrate, mkPersist, persistLowerCase, share,
                              sqlSettings)
-import GHC.Generics         (Generic)
 
 import Models.User
 import Types                (Slug)

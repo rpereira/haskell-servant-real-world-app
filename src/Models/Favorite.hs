@@ -13,13 +13,9 @@
 
 module Models.Favorite where
 
-import Control.Monad.Reader
-import Data.Aeson           (FromJSON, ToJSON)
-import Data.Text            (Text)
-import Database.Persist.Sql
-import Database.Persist.TH  (mkMigrate, mkPersist, persistLowerCase, share,
-                             sqlSettings)
-import GHC.Generics         (Generic)
+import Data.Text           (Text)
+import Database.Persist.TH (mkMigrate, mkPersist, persistLowerCase, share,
+                            sqlSettings)
 
 import Models.Article
 import Models.User

@@ -3,16 +3,10 @@
 
 module Api.Tag where
 
-import Data.Aeson                  (FromJSON)
-import Data.Int                    (Int64)
-import Data.Maybe
-import Data.Text                   (Text)
-import Data.Time                   (getCurrentTime)
-import Database.Persist.Postgresql (Entity (..), deleteWhere, entityKey, insert,
-                                    selectList, toSqlKey, (==.))
+import Database.Persist.Postgresql (Entity (..), selectList)
 import Servant
 
-import Config                      (App (..), Config (..))
+import Config                      (App (..))
 import DB                          (runDb)
 import Models.Tag
 import Types

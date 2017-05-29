@@ -5,21 +5,19 @@
 module Api.Article where
 
 import           Control.Monad.IO.Class      (liftIO)
-import           Data.Aeson                  (FromJSON)
 import           Data.Char                   (isAlphaNum)
 import           Data.Int                    (Int64)
 import           Data.Maybe                  (Maybe, fromMaybe)
 import           Data.Text                   (Text)
 import qualified Data.Text                   as T
 import           Data.Time                   (getCurrentTime)
-import           Database.Persist.Postgresql (Entity (..), deleteWhere,
-                                              deleteWhere, entityKey, insert,
+import           Database.Persist.Postgresql (Entity (..), deleteWhere, insert,
                                               selectFirst, selectList, toSqlKey,
                                               (==.))
 import           Database.Persist.Types      (SelectOpt (..))
 import           Servant
 
-import           Config                      (App (..), Config (..))
+import           Config                      (App (..))
 import           DB                          (runDb)
 import           Models.Article
 import           Types

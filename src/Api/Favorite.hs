@@ -3,7 +3,6 @@
 
 module Api.Favorite where
 
-import Data.Aeson                  (FromJSON)
 import Data.Int                    (Int64)
 import Data.Maybe
 import Data.Text                   (Text)
