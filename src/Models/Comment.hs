@@ -14,13 +14,13 @@
 module Models.Comment where
 
 import Control.Monad.Reader
-import Data.Aeson           ( FromJSON, ToJSON )
-import Data.Text            ( Text )
-import Data.Time            ( UTCTime )
+import Data.Aeson           (FromJSON, ToJSON)
+import Data.Text            (Text)
+import Data.Time            (UTCTime)
 import Database.Persist.Sql
-import Database.Persist.TH  ( mkMigrate, mkPersist, persistLowerCase, share
-                            , sqlSettings )
-import GHC.Generics         ( Generic )
+import Database.Persist.TH  (mkMigrate, mkPersist, persistLowerCase, share,
+                             sqlSettings)
+import GHC.Generics         (Generic)
 
 import Models.Article
 import Models.User

@@ -4,15 +4,15 @@
 
 module Api.Comment where
 
-import Data.Maybe                  ( Maybe )
-import Data.Text                   ( Text )
-import Data.Time                   ( getCurrentTime )
-import Database.Persist.Postgresql ( Entity (..), (==.), rawSql, toPersistValue )
-import Database.Persist.Types      ( SelectOpt (..) )
+import Data.Maybe                  (Maybe)
+import Data.Text                   (Text)
+import Data.Time                   (getCurrentTime)
+import Database.Persist.Postgresql (Entity (..), rawSql, toPersistValue, (==.))
+import Database.Persist.Types      (SelectOpt (..))
 import Servant
 
-import Config                      ( App (..), Config (..) )
-import DB                          ( runDb )
+import Config                      (App (..), Config (..))
+import DB                          (runDb)
 import Models.Comment
 import Types
 

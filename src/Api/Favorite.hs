@@ -3,17 +3,17 @@
 
 module Api.Favorite where
 
-import Data.Aeson                  ( FromJSON )
-import Data.Int                    ( Int64 )
+import Data.Aeson                  (FromJSON)
+import Data.Int                    (Int64)
 import Data.Maybe
-import Data.Text                   ( Text )
-import Data.Time                   ( getCurrentTime )
-import Database.Persist.Postgresql ( Entity (..), (==.), deleteWhere, entityKey
-                                   , insert, selectFirst, toSqlKey )
+import Data.Text                   (Text)
+import Data.Time                   (getCurrentTime)
+import Database.Persist.Postgresql (Entity (..), deleteWhere, entityKey, insert,
+                                    selectFirst, toSqlKey, (==.))
 import Servant
 
-import Config                      ( App (..), Config (..) )
-import DB                          ( runDb )
+import Config                      (App (..), Config (..))
+import DB                          (runDb)
 import Models.Article
 import Models.Favorite
 import Models.User

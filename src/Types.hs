@@ -3,8 +3,8 @@
 
 module Types where
 
-import Data.Aeson.Types ( FromJSON, (.:), (.=), ToJSON, object, parseJSON
-                        , toJSON, withObject )
+import Data.Aeson.Types (FromJSON, ToJSON, object, parseJSON, toJSON,
+                         withObject, (.:), (.=))
 import Data.Text
 import GHC.Generics
 

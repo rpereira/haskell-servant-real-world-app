@@ -4,12 +4,12 @@
 module Api ( app ) where
 
 import Control.Monad.Except
-import Control.Monad.Reader        (ReaderT, runReaderT)
+import Control.Monad.Reader       (ReaderT, runReaderT)
 import Control.Monad.Reader.Class
-import Network.Wai                 (Application)
+import Network.Wai                (Application)
 import Servant
 
-import Config                      (App (..), Config (..))
+import Config                     (App (..), Config (..))
 
 import Api.Article
 import Api.Comment

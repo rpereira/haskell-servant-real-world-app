@@ -10,20 +10,20 @@ module DB
     , runMigrations
     ) where
 
-import Control.Monad.IO.Class      ( liftIO )
+import Control.Monad.IO.Class (liftIO)
 import Control.Monad.Reader
 
-import Database.Persist.Sql (SqlPersistT(..), runMigration, runSqlPool)
+import Database.Persist.Sql   (SqlPersistT (..), runMigration, runSqlPool)
 
 import Config
 
 import Models.Article
 import Models.Comment
 import Models.Favorite
-import Models.User
-import Models.UserFollower
 import Models.Tag
 import Models.Tagging
+import Models.User
+import Models.UserFollower
 
 -- | Perform database migrations.
 runMigrations :: SqlPersistT IO ()

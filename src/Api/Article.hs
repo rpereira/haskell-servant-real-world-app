@@ -4,23 +4,25 @@
 
 module Api.Article where
 
-import Control.Monad.IO.Class      ( liftIO )
-import Data.Aeson                  ( FromJSON )
-import Data.Char                   ( isAlphaNum )
-import Data.Int                    ( Int64 )
-import Data.Maybe                  ( Maybe, fromMaybe )
-import qualified Data.Text as T
-import Data.Text                   ( Text )
-import Data.Time                   ( getCurrentTime )
-import Database.Persist.Postgresql ( Entity (..), (==.), deleteWhere, entityKey
-                                   , insert, selectFirst, selectList, toSqlKey, deleteWhere )
-import Database.Persist.Types      ( SelectOpt (..) )
-import Servant
+import           Control.Monad.IO.Class      (liftIO)
+import           Data.Aeson                  (FromJSON)
+import           Data.Char                   (isAlphaNum)
+import           Data.Int                    (Int64)
+import           Data.Maybe                  (Maybe, fromMaybe)
+import           Data.Text                   (Text)
+import qualified Data.Text                   as T
+import           Data.Time                   (getCurrentTime)
+import           Database.Persist.Postgresql (Entity (..), deleteWhere,
+                                              deleteWhere, entityKey, insert,
+                                              selectFirst, selectList, toSqlKey,
+                                              (==.))
+import           Database.Persist.Types      (SelectOpt (..))
+import           Servant
 
-import Config                      ( App (..), Config (..) )
-import DB                          ( runDb )
-import Models.Article
-import Types
+import           Config                      (App (..), Config (..))
+import           DB                          (runDb)
+import           Models.Article
+import           Types
 
 type ArticleAPI =
          "articles" :> QueryParam "limit" Limit
@@ -66,7 +68,7 @@ createArticle userId (Art a) = do
     article <- insertArticle a userId
     case article of
       Nothing -> throwError err409 { errBody = "Title already exists" }
-      Just x -> return $ Art x
+      Just x  -> return $ Art x
 
 insertArticle :: NewArticle -> Int64 -> App (Maybe (Entity Article))
 insertArticle a userId = do

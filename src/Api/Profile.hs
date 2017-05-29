@@ -3,17 +3,17 @@
 
 module Api.Profile where
 
-import Data.Aeson                  ( FromJSON )
-import Data.Int                    ( Int64 )
+import Data.Aeson                  (FromJSON)
+import Data.Int                    (Int64)
 import Data.Maybe
-import Data.Text                   ( Text )
-import Data.Time                   ( getCurrentTime )
-import Database.Persist.Postgresql ( Entity (..), (==.), deleteWhere, entityKey
-                                   , insert, selectFirst, toSqlKey )
+import Data.Text                   (Text)
+import Data.Time                   (getCurrentTime)
+import Database.Persist.Postgresql (Entity (..), deleteWhere, entityKey, insert,
+                                    selectFirst, toSqlKey, (==.))
 import Servant
 
-import Config                      ( App (..), Config (..) )
-import DB                          ( runDb )
+import Config                      (App (..), Config (..))
+import DB                          (runDb)
 import Models.User
 import Models.UserFollower
 import Types
@@ -42,7 +42,7 @@ getProfile :: Username -> App (Entity User)
 getProfile username = do
     maybeUser <- runDb $ selectFirst [UserUsername ==. username] []
     case maybeUser of
-      Nothing -> throwError err404
+      Nothing   -> throwError err404
       Just user -> return user
 
 -- | While authentication is not supported, let's pass the followerId as an

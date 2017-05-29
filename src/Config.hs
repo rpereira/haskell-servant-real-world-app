@@ -51,9 +51,9 @@ data Environment
 
 -- | This returns a 'Middleware' based on the environment that we're in.
 setLogger :: Environment -> Middleware
-setLogger Test = id
+setLogger Test        = id
 setLogger Development = logStdoutDev
-setLogger Production = logStdout
+setLogger Production  = logStdout
 
 -- | Creates a 'ConnectionPool' for the given environment.  For 'Development'
 -- and 'Test' environments, we use a stock and highly insecure connection
@@ -97,9 +97,9 @@ makePool Production = do
 
 -- | The number of pools to use for a given environment.
 envPool :: Environment -> Int
-envPool Test = 1
+envPool Test        = 1
 envPool Development = 1
-envPool Production = 8
+envPool Production  = 8
 
 -- | A basic 'ConnectionString' for local/test development. Pass in either @""@
 -- for 'Development' or @"test"@ for 'Test'.
