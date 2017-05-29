@@ -11,7 +11,7 @@
 {-# LANGUAGE TemplateHaskell            #-}
 {-# LANGUAGE TypeFamilies               #-}
 
-module Models where
+module Models.Comment where
 
 import Control.Monad.Reader
 import Data.Aeson           ( FromJSON, ToJSON )
@@ -23,34 +23,15 @@ import Database.Persist.TH  ( mkMigrate, mkPersist, persistLowerCase, share
 import GHC.Generics         ( Generic )
 
 import Models.Article
-import Models.Comment
 import Models.User
-import Models.UserFollower
-import Models.Tag
-import Models.Tagging
-import Config
-import Types
 
-share [mkPersist sqlSettings, mkMigrate "migrateAll"] [persistLowerCase|
-Favorite json sql=favorits
+share [mkPersist sqlSettings, mkMigrate "migrateComment"] [persistLowerCase|
+Comment json sql=comments
+    body      Text
+    createdAt UTCTime default=now()
+    updatedAt UTCTime Maybe default=NULL
     userId    UserId
     articleId ArticleId
 
-    Primary userId articleId
-    UniqueFavorite userId articleId
+    deriving Show
 |]
-
-doMigrations :: SqlPersistT IO ()
-doMigrations = do
-    runMigration migrateAll
-    runMigration migrateArticle
-    runMigration migrateComment
-    runMigration migrateUser
-    runMigration migrateUserFollower
-    runMigration migrateTag
-    runMigration migrateTagging
-
-runDb :: (MonadReader Config m, MonadIO m) => SqlPersistT IO b -> m b
-runDb query = do
-    pool <- asks getPool
-    liftIO $ runSqlPool query pool

@@ -12,7 +12,8 @@ import Database.Persist.Types      ( SelectOpt (..) )
 import Servant
 
 import Config                      ( App (..), Config (..) )
-import Models
+import Models                      ( runDb )
+import Models.Comment
 import Types
 
 type CommentAPI =

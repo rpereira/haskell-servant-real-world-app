@@ -25,6 +25,7 @@ library
                      , Config
                      , Models
                      , Models.Article
+                     , Models.Comment
                      , Models.User
                      , Models.UserFollower
                      , Models.Tag
