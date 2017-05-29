@@ -13,7 +13,8 @@ import Database.Persist.Postgresql ( Entity (..), (==.), deleteWhere, entityKey
 import Servant
 
 import Config                      ( App (..), Config (..) )
-import Models
+import Models                      ( runDb )
+import Models.Tag
 import Types
 
 type TagAPI = "tags" :> Get '[JSON] (TagList [Entity Tag])

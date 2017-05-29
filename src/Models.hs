@@ -25,15 +25,11 @@ import GHC.Generics         ( Generic )
 import Models.Article
 import Models.User
 import Models.UserFollower
+import Models.Tag
 import Config
 import Types
 
 share [mkPersist sqlSettings, mkMigrate "migrateAll"] [persistLowerCase|
-Tag json sql=tags
-    name Text
-    UniqueName name
-    deriving Show
-
 Tagging json sql=taggings
     articleId ArticleId
     tagId TagId
@@ -66,6 +62,7 @@ doMigrations = do
     runMigration migrateArticle
     runMigration migrateUser
     runMigration migrateUserFollower
+    runMigration migrateTag
 
 runDb :: (MonadReader Config m, MonadIO m) => SqlPersistT IO b -> m b
 runDb query = do

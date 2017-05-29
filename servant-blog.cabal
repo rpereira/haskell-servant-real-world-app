@@ -27,6 +27,7 @@ library
                      , Models.Article
                      , Models.User
                      , Models.UserFollower
+                     , Models.Tag
                      , Types
   build-depends:       base >= 4.7 && < 5
                      , aeson
