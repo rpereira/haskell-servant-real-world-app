@@ -23,17 +23,11 @@ import Database.Persist.TH  ( mkMigrate, mkPersist, persistLowerCase, share
 import GHC.Generics         ( Generic )
 
 import Models.User
+import Models.UserFollower
 import Config
 import Types
 
 share [mkPersist sqlSettings, mkMigrate "migrateAll"] [persistLowerCase|
-UserFollower json sql=user_followers
-    userId     UserId
-    followerId UserId
-
-    Primary userId followerId
-
-    deriving Show
 
 Article json sql=articles
     slug        Slug
@@ -81,6 +75,7 @@ doMigrations :: SqlPersistT IO ()
 doMigrations = do
     runMigration migrateAll
     runMigration migrateUser
+    runMigration migrateUserFollower
 
 runDb :: (MonadReader Config m, MonadIO m) => SqlPersistT IO b -> m b
 runDb query = do
