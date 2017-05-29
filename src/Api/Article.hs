@@ -72,9 +72,10 @@ insertArticle :: NewArticle -> Int64 -> App (Maybe (Entity Article))
 insertArticle a userId = do
     time <- liftIO getCurrentTime
     runDb $ do
-        id <- insert (Article (slugify $ title a) (title a) (body a)
-                              (description a) time Nothing (toSqlKey userId))
-        selectFirst [ArticleId ==. id] []
+        articleId <- insert $
+            Article (slugify $ title a) (title a) (body a)
+                    (description a) time Nothing (toSqlKey userId)
+        selectFirst [ArticleId ==. articleId] []
 
 -- | TODO: delete everything associated with an article
 deleteArticle :: Slug -> App NoContent
