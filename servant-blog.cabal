@@ -24,6 +24,7 @@ library
                      , Api.Tag
                      , Config
                      , Models
+                     , Models.Article
                      , Models.User
                      , Models.UserFollower
                      , Types

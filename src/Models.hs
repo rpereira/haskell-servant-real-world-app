@@ -22,24 +22,13 @@ import Database.Persist.TH  ( mkMigrate, mkPersist, persistLowerCase, share
                             , sqlSettings )
 import GHC.Generics         ( Generic )
 
+import Models.Article
 import Models.User
 import Models.UserFollower
 import Config
 import Types
 
 share [mkPersist sqlSettings, mkMigrate "migrateAll"] [persistLowerCase|
-
-Article json sql=articles
-    slug        Slug
-    title       Text
-    description Text
-    body        Text
-    createdAt   UTCTime default=now()
-    updatedAt   UTCTime Maybe default=NULL
-    userId      UserId
-
-    UniqueSlug slug
-
 Tag json sql=tags
     name Text
     UniqueName name
@@ -74,6 +63,7 @@ Favorite json sql=favorits
 doMigrations :: SqlPersistT IO ()
 doMigrations = do
     runMigration migrateAll
+    runMigration migrateArticle
     runMigration migrateUser
     runMigration migrateUserFollower
 

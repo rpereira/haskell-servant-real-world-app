@@ -14,6 +14,7 @@ import Servant
 
 import Config                      ( App (..), Config (..) )
 import Models
+import Models.Article
 import Types
 
 type FavoriteAPI =

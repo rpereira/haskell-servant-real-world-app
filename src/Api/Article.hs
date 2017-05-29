@@ -18,7 +18,8 @@ import Database.Persist.Types      ( SelectOpt (..) )
 import Servant
 
 import Config                      ( App (..), Config (..) )
-import Models
+import Models                      ( runDb )
+import Models.Article
 import Types
 
 type ArticleAPI =
