@@ -26,19 +26,11 @@ import Models.Article
 import Models.User
 import Models.UserFollower
 import Models.Tag
+import Models.Tagging
 import Config
 import Types
 
 share [mkPersist sqlSettings, mkMigrate "migrateAll"] [persistLowerCase|
-Tagging json sql=taggings
-    articleId ArticleId
-    tagId TagId
-
-    Primary articleId tagId
-    UniqueTagging articleId tagId
-
-    deriving Show
-
 Comment json sql=comments
     body      Text
     createdAt UTCTime default=now()
@@ -63,6 +55,7 @@ doMigrations = do
     runMigration migrateUser
     runMigration migrateUserFollower
     runMigration migrateTag
+    runMigration migrateTagging
 
 runDb :: (MonadReader Config m, MonadIO m) => SqlPersistT IO b -> m b
 runDb query = do
