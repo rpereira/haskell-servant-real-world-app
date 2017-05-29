@@ -14,6 +14,7 @@ import Servant
 
 import Config                      ( App (..), Config (..) )
 import Models
+import Models.User
 import Types
 
 type ProfileAPI =

@@ -14,7 +14,8 @@ import Database.Persist.Postgresql ( Entity (..), fromSqlKey, insert, selectList
 import Servant
 
 import Config                      ( App (..), Config (..) )
-import Models
+import Models                      ( runDb )
+import Models.User
 import Types
 
 type RegistrationAPI = "users"

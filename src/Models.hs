@@ -22,21 +22,11 @@ import Database.Persist.TH  ( mkMigrate, mkPersist, persistLowerCase, share
                             , sqlSettings )
 import GHC.Generics         ( Generic )
 
+import Models.User
 import Config
 import Types
 
 share [mkPersist sqlSettings, mkMigrate "migrateAll"] [persistLowerCase|
-User json sql=users
-    username  Text
-    email     Text
-    bio       Text Maybe default=NULL
-    image     Text Maybe default=NULL
-    createdAt UTCTime default=now()
-    updatedAt UTCTime Maybe default=NULL
-
-    UniqueUser username email
-    deriving Show
-
 UserFollower json sql=user_followers
     userId     UserId
     followerId UserId
@@ -88,7 +78,9 @@ Favorite json sql=favorits
 |]
 
 doMigrations :: SqlPersistT IO ()
-doMigrations = runMigration migrateAll
+doMigrations = do
+    runMigration migrateAll
+    runMigration migrateUser
 
 runDb :: (MonadReader Config m, MonadIO m) => SqlPersistT IO b -> m b
 runDb query = do
