@@ -13,7 +13,6 @@
 
 module Models.Article where
 
-import Control.Monad.Reader
 import Data.Text            (Text)
 import Data.Time            (UTCTime)
 import Database.Persist.TH  (mkMigrate, mkPersist, persistLowerCase, share,
