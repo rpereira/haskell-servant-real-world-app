@@ -39,6 +39,20 @@ data NewUser = NewUser
 instance FromJSON NewUser
 
 --------------------------------------------------------------------------------
+--  Profile
+
+data Profile a = Profile a
+    deriving (Eq, Show, Generic)
+
+instance ToJSON a => ToJSON (Profile a) where
+    toJSON (Profile a) = object ["profile" .= a]
+
+instance FromJSON a => FromJSON (Profile a) where
+    parseJSON = withObject "profile" $ \o -> do
+        a <- o .: "profile"
+        return (Profile a)
+
+--------------------------------------------------------------------------------
 --  Article
 
 data NewArticle = NewArticle

@@ -17,17 +17,17 @@ import Types
 
 type ProfileAPI =
          "profiles" :> Capture "username" Username
-                    :> Get '[JSON] (Entity User)
+                    :> Get '[JSON] (Profile (Entity User))
 
     :<|> "profiles" :> Capture "username" Username
                     :> "follow"
                     :> Capture "followerId" Int64
-                    :> Post '[JSON] (Entity User)
+                    :> Post '[JSON] (Profile (Entity User))
 
     :<|> "profiles" :> Capture "username" Username
                     :> "follow"
                     :> Capture "followerId" Int64
-                    :> Delete '[JSON] (Entity User)
+                    :> Delete '[JSON] (Profile (Entity User))
 
 profileServer :: ServerT ProfileAPI App
 profileServer =
@@ -35,25 +35,25 @@ profileServer =
     :<|> followProfile
     :<|> unfollowProfile
 
-getProfile :: Username -> App (Entity User)
+getProfile :: Username -> App (Profile (Entity User))
 getProfile username = do
     maybeUser <- runDb $ selectFirst [UserUsername ==. username] []
     case maybeUser of
       Nothing   -> throwError err404
-      Just user -> return user
+      Just user -> return $ Profile user
 
 -- | While authentication is not supported, let's pass the followerId as an
 -- argument as well.
-followProfile :: Username -> Int64 -> App (Entity User)
+followProfile :: Username -> Int64 -> App (Profile (Entity User))
 followProfile username followerId = do
     maybeUser <- runDb $ selectFirst [UserUsername ==. username] []
     case maybeUser of
       Nothing -> throwError err404
       Just followee -> do
           runDb $ insert (UserFollower (entityKey followee) (toSqlKey followerId))
-          return followee
+          return $ Profile followee
 
-unfollowProfile :: Username -> Int64 -> App (Entity User)
+unfollowProfile :: Username -> Int64 -> App (Profile (Entity User))
 unfollowProfile username followerId = do
     maybeUser <- runDb $ selectFirst [UserUsername ==. username] []
     case maybeUser of
@@ -61,4 +61,4 @@ unfollowProfile username followerId = do
       Just followee -> do
           runDb $ deleteWhere [ UserFollowerUserId ==. entityKey followee
                               , UserFollowerFollowerId ==. toSqlKey followerId ]
-          return followee
+          return $ Profile followee
