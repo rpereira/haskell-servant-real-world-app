@@ -5,10 +5,17 @@
 {-# LANGUAGE OverloadedStrings     #-}
 {-# LANGUAGE TypeFamilies          #-}
 
-module Models where
+module DB
+    ( runDb
+    , runMigrations
+    ) where
 
+import Control.Monad.IO.Class      ( liftIO )
 import Control.Monad.Reader
-import Database.Persist.Sql
+
+import Database.Persist.Sql (SqlPersistT(..), runMigration, runSqlPool)
+
+import Config
 
 import Models.Article
 import Models.Comment
@@ -17,11 +24,10 @@ import Models.User
 import Models.UserFollower
 import Models.Tag
 import Models.Tagging
-import Config
-import Types
 
-doMigrations :: SqlPersistT IO ()
-doMigrations = do
+-- | Perform database migrations.
+runMigrations :: SqlPersistT IO ()
+runMigrations = do
     runMigration migrateArticle
     runMigration migrateComment
     runMigration migrateFavorite
@@ -30,6 +36,7 @@ doMigrations = do
     runMigration migrateTag
     runMigration migrateTagging
 
+-- | Run database actions.
 runDb :: (MonadReader Config m, MonadIO m) => SqlPersistT IO b -> m b
 runDb query = do
     pool <- asks getPool

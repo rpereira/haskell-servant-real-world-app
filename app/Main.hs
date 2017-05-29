@@ -7,7 +7,7 @@ import System.Environment          (lookupEnv)
 import Api                         (app)
 import Config                      (Config (..), Environment (..),
                                     makePool, setLogger)
-import Models                      (doMigrations)
+import DB                          (runMigrations)
 import Safe                        (readMay)
 
 -- | The 'main' function gathers the required environment information and
@@ -19,7 +19,7 @@ main = do
     pool <- makePool env
     let cfg = Config { getPool = pool, getEnv = env }
         logger = setLogger env
-    runSqlPool doMigrations pool
+    runSqlPool runMigrations pool
     run port $ logger $ app cfg
 
 -- | Looks up a setting in the environment, with a provided default, and 'read's

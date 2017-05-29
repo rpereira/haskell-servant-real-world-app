@@ -13,7 +13,7 @@ import Database.Persist.Postgresql ( Entity (..), (==.), deleteWhere, entityKey
 import Servant
 
 import Config                      ( App (..), Config (..) )
-import Models
+import DB                          ( runDb )
 import Models.User
 import Models.UserFollower
 import Types

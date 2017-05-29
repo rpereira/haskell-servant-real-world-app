@@ -10,7 +10,6 @@ import Network.Wai                 (Application)
 import Servant
 
 import Config                      (App (..), Config (..))
-import Models
 
 import Api.Article
 import Api.Comment

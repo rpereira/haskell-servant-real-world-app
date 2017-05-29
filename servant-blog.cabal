@@ -23,7 +23,7 @@ library
                      , Api.Registration
                      , Api.Tag
                      , Config
-                     , Models
+                     , DB
                      , Models.Article
                      , Models.Comment
                      , Models.Favorite

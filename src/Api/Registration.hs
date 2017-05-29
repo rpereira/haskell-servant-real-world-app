@@ -14,7 +14,7 @@ import Database.Persist.Postgresql ( Entity (..), fromSqlKey, insert, selectList
 import Servant
 
 import Config                      ( App (..), Config (..) )
-import Models                      ( runDb )
+import DB                          ( runDb )
 import Models.User
 import Types
 
