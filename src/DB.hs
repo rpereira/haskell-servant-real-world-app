@@ -25,6 +25,12 @@ import Models.Tagging
 import Models.User
 import Models.UserFollower
 
+-- | Run database actions.
+runDb :: (MonadReader Config m, MonadIO m) => SqlPersistT IO b -> m b
+runDb query = do
+    pool <- asks getPool
+    liftIO $ runSqlPool query pool
+
 -- | List of database migrations to perform.
 migrations =
     [ migrateArticle
@@ -40,9 +46,3 @@ migrations =
 runMigrations :: SqlPersistT IO ()
 runMigrations = forM_ migrations $ \m ->
     runMigration m
-
--- | Run database actions.
-runDb :: (MonadReader Config m, MonadIO m) => SqlPersistT IO b -> m b
-runDb query = do
-    pool <- asks getPool
-    liftIO $ runSqlPool query pool
