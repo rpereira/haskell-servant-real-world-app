@@ -1,5 +1,6 @@
-{-# LANGUAGE DataKinds     #-}
-{-# LANGUAGE TypeOperators #-}
+{-# LANGUAGE DataKinds      #-}
+{-# LANGUAGE NamedFieldPuns #-}
+{-# LANGUAGE TypeOperators  #-}
 
 module Api.Profile where
 
@@ -17,7 +18,7 @@ import Types
 
 type ProfileAPI =
          "profiles" :> Capture "username" Username
-                    :> Get '[JSON] (Profile (Entity User))
+                    :> Get '[JSON] (Profile (Maybe UserProfile))
 
     :<|> "profiles" :> Capture "username" Username
                     :> "follow"
@@ -35,12 +36,19 @@ profileServer =
     :<|> followProfile
     :<|> unfollowProfile
 
-getProfile :: Username -> App (Profile (Entity User))
+userToProfile :: Entity User -> UserProfile
+userToProfile (Entity k User {userUsername, userBio, userImage}) =
+    UserProfile userUsername userBio userImage
+
+-- | TODO: return err404 instead of Maybe?
+--     case maybeUser of
+--       Nothing   -> throwError err404
+--       Just user -> return . Profile $ userToProfile (Entity user)
+getProfile :: Username -> App (Profile (Maybe UserProfile))
 getProfile username = do
     maybeUser <- runDb $ selectFirst [UserUsername ==. username] []
-    case maybeUser of
-      Nothing   -> throwError err404
-      Just user -> return $ Profile user
+    let profile = fmap userToProfile maybeUser
+    return $ Profile profile
 
 -- | While authentication is not supported, let's pass the followerId as an
 -- argument as well.

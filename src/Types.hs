@@ -1,4 +1,5 @@
 {-# LANGUAGE DeriveGeneric     #-}
+{-# LANGUAGE NamedFieldPuns    #-}
 {-# LANGUAGE OverloadedStrings #-}
 
 module Types where
@@ -51,6 +52,16 @@ instance FromJSON a => FromJSON (Profile a) where
     parseJSON = withObject "profile" $ \o -> do
         a <- o .: "profile"
         return (Profile a)
+
+data UserProfile = UserProfile
+    { proUsername :: Username
+    , proBio      :: Maybe Text
+    , proImage    :: Maybe Text
+    -- , proFollowing :: Bool
+    } deriving (Eq, Show, Generic)
+
+instance ToJSON UserProfile
+instance FromJSON UserProfile
 
 --------------------------------------------------------------------------------
 --  Article
