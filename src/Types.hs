@@ -4,10 +4,15 @@
 
 module Types where
 
-import Data.Aeson.Types (FromJSON, ToJSON, object, parseJSON, toJSON,
-                         withObject, (.:), (.=))
-import Data.Text
+import Data.Aeson.Types (FromJSON, ToJSON, defaultOptions, fieldLabelModifier,
+                         genericToJSON, object, parseJSON, toJSON, withObject,
+                         (.:), (.=))
+import Data.Char        (toLower)
+import Data.Text        (Text)
 import GHC.Generics
+
+toJSONoptions =
+    defaultOptions { fieldLabelModifier = map toLower . drop 3 }
 
 type Username = Text
 type Slug = Text
@@ -57,11 +62,10 @@ data UserProfile = UserProfile
     { proUsername :: Username
     , proBio      :: Maybe Text
     , proImage    :: Maybe Text
-    -- , proFollowing :: Bool
     } deriving (Eq, Show, Generic)
 
-instance ToJSON UserProfile
-instance FromJSON UserProfile
+instance ToJSON UserProfile where
+    toJSON = genericToJSON toJSONoptions
 
 --------------------------------------------------------------------------------
 --  Article
