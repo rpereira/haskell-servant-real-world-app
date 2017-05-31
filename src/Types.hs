@@ -5,8 +5,8 @@
 module Types where
 
 import Data.Aeson.Types (FromJSON, ToJSON, defaultOptions, fieldLabelModifier,
-                         genericToJSON, genericParseJSON, object, parseJSON, toJSON, withObject,
-                         (.:), (.=))
+                         genericParseJSON, genericToJSON, object, parseJSON,
+                         toJSON, withObject, (.:), (.=))
 import Data.Char        (toLower)
 import Data.Text        (Text)
 import GHC.Generics
@@ -32,6 +32,17 @@ data NewUser = NewUser
     } deriving (Show, Generic)
 
 instance FromJSON NewUser
+
+data AuthUser = AuthUser
+    { aurUsername :: Username
+    , aurToken    :: Text
+    , aurEmail    :: Text
+    , aurBio      :: Maybe Text
+    , aurImage    :: Maybe Text
+    } deriving (Eq, Show, Generic)
+
+instance ToJSON AuthUser where
+    toJSON = genericToJSON toJSONoptions
 
 data Usr a = Usr a
     deriving (Eq, Show, Generic)

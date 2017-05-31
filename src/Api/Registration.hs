@@ -1,5 +1,6 @@
 {-# LANGUAGE DataKinds         #-}
 {-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE RecordWildCards   #-}
 {-# LANGUAGE TypeOperators     #-}
 
 module Api.Registration where
@@ -20,12 +21,16 @@ import Types
 
 type RegistrationAPI = "users"
                     :> ReqBody '[JSON] (Usr NewUser)
-                    :> PostCreated '[JSON] Int64
+                    :> PostCreated '[JSON] (Usr (Maybe AuthUser))
 
 registrarionServer :: ServerT RegistrationAPI App
 registrarionServer = createUser
 
-createUser :: Usr NewUser -> App Int64
+userToAuth :: Entity User -> AuthUser
+userToAuth (Entity k User {..}) =
+    AuthUser userUsername userUsername userEmail userBio userImage
+
+createUser :: Usr NewUser -> App (Usr (Maybe AuthUser))
 createUser (Usr u) = do
     exists <- runDb $ selectFirst [UserUsername ==. username u] []
     case exists of
@@ -34,4 +39,5 @@ createUser (Usr u) = do
           time <- liftIO getCurrentTime
           newUser <- runDb $
               insert (User (username u) (email u) Nothing Nothing time Nothing)
-          return $ fromSqlKey newUser
+          user <- runDb $ selectFirst [UserId ==. newUser] []
+          return . Usr $ fmap userToAuth user
