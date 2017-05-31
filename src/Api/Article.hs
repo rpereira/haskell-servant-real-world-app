@@ -58,15 +58,16 @@ getArticle slug = do
     article <- runDb $ selectFirst [ArticleSlug ==. slug] []
     return $ Art article
 
--- | TODO: Correctly handle attempt to create title with already existing slug
--- Nice explanation here for status code:
--- https://stackoverflow.com/a/25541368/1319249
 createArticle :: Int64 -> Art NewArticle -> App (Art (Entity Article))
 createArticle userId (Art a) = do
-    article <- insertArticle a userId
-    case article of
-      Nothing -> throwError err409 { errBody = "Title already exists" }
-      Just x  -> return $ Art x
+    exists <- runDb $ selectFirst [ArticleSlug ==. slugify (title a)] []
+    case exists of
+      Just _ -> throwError err409 { errBody = "Title already exists" }
+      Nothing -> do
+          article <- insertArticle a userId
+          case article of
+            Nothing -> throwError err500
+            Just x  -> return $ Art x
 
 insertArticle :: NewArticle -> Int64 -> App (Maybe (Entity Article))
 insertArticle a userId = do
