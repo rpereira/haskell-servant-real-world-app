@@ -1,6 +1,7 @@
-{-# LANGUAGE DataKinds      #-}
-{-# LANGUAGE NamedFieldPuns #-}
-{-# LANGUAGE TypeOperators  #-}
+{-# LANGUAGE DataKinds       #-}
+{-# LANGUAGE NamedFieldPuns  #-}
+{-# LANGUAGE RecordWildCards #-}
+{-# LANGUAGE TypeOperators   #-}
 
 module Api.Profile where
 
@@ -37,7 +38,7 @@ profileServer =
     :<|> unfollowProfile
 
 userToProfile :: Entity User -> UserProfile
-userToProfile (Entity k User {userUsername, userBio, userImage}) =
+userToProfile (Entity k User {..}) =
     UserProfile userUsername userBio userImage
 
 -- | TODO: return err404 instead of Maybe?
