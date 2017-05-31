@@ -24,12 +24,12 @@ type ProfileAPI =
     :<|> "profiles" :> Capture "username" Username
                     :> "follow"
                     :> Capture "followerId" Int64
-                    :> Post '[JSON] (Profile (Entity User))
+                    :> Post '[JSON] (Profile UserProfile)
 
     :<|> "profiles" :> Capture "username" Username
                     :> "follow"
                     :> Capture "followerId" Int64
-                    :> Delete '[JSON] (Profile (Entity User))
+                    :> Delete '[JSON] (Profile UserProfile)
 
 profileServer :: ServerT ProfileAPI App
 profileServer =
@@ -53,16 +53,16 @@ getProfile username = do
 
 -- | While authentication is not supported, let's pass the followerId as an
 -- argument as well.
-followProfile :: Username -> Int64 -> App (Profile (Entity User))
+followProfile :: Username -> Int64 -> App (Profile UserProfile)
 followProfile username followerId = do
     maybeUser <- runDb $ selectFirst [UserUsername ==. username] []
     case maybeUser of
       Nothing -> throwError err404
       Just followee -> do
           runDb $ insert (UserFollower (entityKey followee) (toSqlKey followerId))
-          return $ Profile followee
+          return . Profile $ userToProfile followee
 
-unfollowProfile :: Username -> Int64 -> App (Profile (Entity User))
+unfollowProfile :: Username -> Int64 -> App (Profile UserProfile)
 unfollowProfile username followerId = do
     maybeUser <- runDb $ selectFirst [UserUsername ==. username] []
     case maybeUser of
@@ -70,4 +70,4 @@ unfollowProfile username followerId = do
       Just followee -> do
           runDb $ deleteWhere [ UserFollowerUserId ==. entityKey followee
                               , UserFollowerFollowerId ==. toSqlKey followerId ]
-          return $ Profile followee
+          return . Profile $ userToProfile followee
