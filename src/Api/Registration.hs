@@ -19,12 +19,16 @@ import DB                          (runDb)
 import Models.User
 import Types
 
-type RegistrationAPI = "users"
-                    :> ReqBody '[JSON] (Usr NewUser)
-                    :> PostCreated '[JSON] (Usr (Maybe AuthUser))
+type RegistrationAPI =
+         "users" :> ReqBody '[JSON] (Usr NewUser)
+                 :> PostCreated '[JSON] (Usr (Maybe AuthUser))
+
+    :<|> "users" :> "login"
+                 :> ReqBody '[JSON] (Usr Login)
+                 :> Post '[JSON] (Usr (Maybe AuthUser))
 
 registrationServer :: ServerT RegistrationAPI App
-registrationServer = createUser
+registrationServer = createUser :<|> login
 
 userToAuth :: Entity User -> AuthUser
 userToAuth (Entity k User {..}) =
@@ -32,12 +36,20 @@ userToAuth (Entity k User {..}) =
 
 createUser :: Usr NewUser -> App (Usr (Maybe AuthUser))
 createUser (Usr u) = do
-    exists <- runDb $ selectFirst [UserUsername ==. username u] []
+    exists <- runDb $ selectFirst [UserUsername ==. nusUsername u] []
     case exists of
       Just _ -> throwError err409 { errBody = "Username already exists"  }
       Nothing -> do
           time <- liftIO getCurrentTime
           newUser <- runDb $
-              insert (User (username u) (email u) Nothing Nothing time Nothing)
+              insert (User (nusUsername u) (nusEmail u) (nusPassword u) Nothing Nothing time Nothing)
           user <- runDb $ selectFirst [UserId ==. newUser] []
           return . Usr $ fmap userToAuth user
+
+login :: Usr Login -> App (Usr (Maybe AuthUser))
+login (Usr (Login email password)) = do
+    maybeUser <- runDb $
+        selectFirst [UserEmail ==. email, UserPassword ==. password] []
+    case maybeUser of
+      Nothing -> throwError err401 { errBody = "Incorrect username or password" }
+      Just user -> return . Usr $ fmap userToAuth maybeUser

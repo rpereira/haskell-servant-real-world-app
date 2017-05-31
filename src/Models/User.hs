@@ -22,6 +22,7 @@ share [mkPersist sqlSettings, mkMigrate "migrateUser"] [persistLowerCase|
 User json sql=users
     username  Text
     email     Text
+    password  Text
     bio       Text Maybe default=NULL
     image     Text Maybe default=NULL
     createdAt UTCTime default=now()

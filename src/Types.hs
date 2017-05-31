@@ -27,11 +27,13 @@ type Offset = Int
 --  User
 
 data NewUser = NewUser
-    { username :: Username
-    , email    :: Text
+    { nusUsername :: Username
+    , nusEmail    :: Text
+    , nusPassword :: Text
     } deriving (Show, Generic)
 
-instance FromJSON NewUser
+instance FromJSON NewUser where
+    parseJSON = genericParseJSON toJSONoptions
 
 data AuthUser = AuthUser
     { aurUsername :: Username
@@ -43,6 +45,14 @@ data AuthUser = AuthUser
 
 instance ToJSON AuthUser where
     toJSON = genericToJSON toJSONoptions
+
+data Login = Login
+    { logEmail    :: Text
+    , logPassword :: Text
+    } deriving (Eq, Show, Generic)
+
+instance FromJSON Login where
+    parseJSON = genericParseJSON toJSONoptions
 
 data Usr a = Usr a
     deriving (Eq, Show, Generic)
