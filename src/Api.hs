@@ -27,7 +27,7 @@ type API = RegistrationAPI
 
 -- | Combinate all endpoints to be served.
 server :: ServerT API App
-server = registrarionServer
+server = registrationServer
     :<|> profileServer
     :<|> articleServer
     :<|> tagServer

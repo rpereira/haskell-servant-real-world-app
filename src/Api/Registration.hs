@@ -23,8 +23,8 @@ type RegistrationAPI = "users"
                     :> ReqBody '[JSON] (Usr NewUser)
                     :> PostCreated '[JSON] (Usr (Maybe AuthUser))
 
-registrarionServer :: ServerT RegistrationAPI App
-registrarionServer = createUser
+registrationServer :: ServerT RegistrationAPI App
+registrationServer = createUser
 
 userToAuth :: Entity User -> AuthUser
 userToAuth (Entity k User {..}) =
