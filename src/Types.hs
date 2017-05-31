@@ -26,6 +26,13 @@ type Offset = Int
 --------------------------------------------------------------------------------
 --  User
 
+data NewUser = NewUser
+    { username :: Username
+    , email    :: Text
+    } deriving (Show, Generic)
+
+instance FromJSON NewUser
+
 data Usr a = Usr a
     deriving (Eq, Show, Generic)
 
@@ -37,15 +44,17 @@ instance FromJSON a => FromJSON (Usr a) where
         a <- o .: "user"
         return (Usr a)
 
-data NewUser = NewUser
-    { username :: Username
-    , email    :: Text
-    } deriving (Show, Generic)
-
-instance FromJSON NewUser
-
 --------------------------------------------------------------------------------
 --  Profile
+
+data UserProfile = UserProfile
+    { proUsername :: Username
+    , proBio      :: Maybe Text
+    , proImage    :: Maybe Text
+    } deriving (Eq, Show, Generic)
+
+instance ToJSON UserProfile where
+    toJSON = genericToJSON toJSONoptions
 
 data Profile a = Profile a
     deriving (Eq, Show, Generic)
@@ -57,15 +66,6 @@ instance FromJSON a => FromJSON (Profile a) where
     parseJSON = withObject "profile" $ \o -> do
         a <- o .: "profile"
         return (Profile a)
-
-data UserProfile = UserProfile
-    { proUsername :: Username
-    , proBio      :: Maybe Text
-    , proImage    :: Maybe Text
-    } deriving (Eq, Show, Generic)
-
-instance ToJSON UserProfile where
-    toJSON = genericToJSON toJSONoptions
 
 --------------------------------------------------------------------------------
 --  Article
