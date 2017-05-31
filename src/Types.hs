@@ -5,7 +5,7 @@
 module Types where
 
 import Data.Aeson.Types (FromJSON, ToJSON, defaultOptions, fieldLabelModifier,
-                         genericToJSON, object, parseJSON, toJSON, withObject,
+                         genericToJSON, genericParseJSON, object, parseJSON, toJSON, withObject,
                          (.:), (.=))
 import Data.Char        (toLower)
 import Data.Text        (Text)
@@ -112,3 +112,20 @@ data Cmts a = Cmts a
 
 instance ToJSON a => ToJSON (Cmts a) where
     toJSON (Cmts a) = object ["comments" .= a]
+
+data Cmt a = Cmt a
+  deriving (Eq, Show, Generic)
+
+instance ToJSON a => ToJSON (Cmt a) where
+  toJSON (Cmt a) = object ["comment" .= a]
+
+instance FromJSON a => FromJSON (Cmt a) where
+  parseJSON = withObject "comment" $ \o -> do
+    a <- o .: "comment"
+    return (Cmt a)
+
+data NewComment = NewComment { cmtBody :: Text }
+    deriving (Eq, Show, Generic)
+
+instance FromJSON NewComment where
+    parseJSON = genericParseJSON toJSONoptions
