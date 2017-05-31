@@ -1,5 +1,6 @@
-{-# LANGUAGE DataKinds     #-}
-{-# LANGUAGE TypeOperators #-}
+{-# LANGUAGE DataKinds         #-}
+{-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE TypeOperators     #-}
 
 module Api.Registration where
 
@@ -8,7 +9,8 @@ import Data.Int                    (Int64)
 import Data.Maybe
 import Data.Text                   (Text)
 import Data.Time                   (getCurrentTime)
-import Database.Persist.Postgresql (Entity (..), fromSqlKey, insert, (==.))
+import Database.Persist.Postgresql (Entity (..), fromSqlKey, insert,
+                                    selectFirst, (==.))
 import Servant
 
 import Config                      (App (..), Config (..))
@@ -23,10 +25,13 @@ type RegistrationAPI = "users"
 registrarionServer :: ServerT RegistrationAPI App
 registrarionServer = createUser
 
--- TODO: handle case when an already existing user is given
 createUser :: Usr NewUser -> App Int64
 createUser (Usr u) = do
-    time <- liftIO getCurrentTime
-    newUser <- runDb $
-        insert (User (username u) (email u) Nothing Nothing time Nothing)
-    return $ fromSqlKey newUser
+    exists <- runDb $ selectFirst [UserUsername ==. username u] []
+    case exists of
+      Just _ -> throwError err409 { errBody = "Username already exists"  }
+      Nothing -> do
+          time <- liftIO getCurrentTime
+          newUser <- runDb $
+              insert (User (username u) (email u) Nothing Nothing time Nothing)
+          return $ fromSqlKey newUser
